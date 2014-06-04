@@ -192,7 +192,10 @@ overworld_bg2_tilemap: .long 0x03005014
 overworld_bg3_tilemap: .long 0x0300501C
 _3014: .long 0x3014
 render_bgmap: .long 0x080F67A4+1
-```I should probably note that this version was actually slightly larger due to the bl's at the end, and as such part of the unused part of the routine was cut out. But, after some optimisations we can come out with a much cleaner version of this renderer which is a lot more efficient:
+```
+
+I should probably note that this version was actually slightly larger due to the bl's at the end, and as such part of the unused part of the routine was cut out. But, after some optimisations we can come out with a much cleaner version of this renderer which is a lot more efficient:
+
 ```
 .thumb
 .thumb_func
@@ -323,7 +326,10 @@ overworld_bg1_tilemap: .long 0x03005018
 overworld_bg2_tilemap: .long 0x03005014
 overworld_bg3_tilemap: .long 0x0300501C
 render_bgmap: .long 0x080F67A4+1
-```In this version we cut out a lot of the repetition and junk, bringing our routine down to a slim 188 bytes, 100 bytes smaller than the original 288. With some modification, I added my triple layer tile hack:
+```
+
+In this version we cut out a lot of the repetition and junk, bringing our routine down to a slim 188 bytes, 100 bytes smaller than the original 288. With some modification, I added my triple layer tile hack:
+
 ```
 .thumb
 .thumb_func
@@ -518,7 +524,9 @@ cur_mapheader: .long 0x02036DFC
 
 So how does it work? There are a few parts to this. First, the background byte must be set to 0x60, which will trigger the triple layer tile code. Next, we need to select our block which will be the top layer donor. In vanilla Fire Red, block 0xF contains a top layer for trees. Now since we're using only unused bits, we are required to use the following mask for identifying our block:
 
-```00FFC000```
+```
+00FFC000
+```
 
 Which is basically just 10 bits bitshifted left by 14.
 
@@ -532,7 +540,10 @@ So how can I use this in A-Map? Well, it's a bit complicated. First you need to 
 
 [2][3]
 
-```So if we split up our dword by bytes (00 03 80 00), we'll get something like this:
+```
+
+So if we split up our dword by bytes (00 03 80 00), we'll get something like this:
+
 
 ```
 
@@ -540,7 +551,9 @@ So how can I use this in A-Map? Well, it's a bit complicated. First you need to 
 
 [03][60]
 
-```Now the reason why I put a 60 in there, is because that is what triggers the triple tile. Now obviously your tile might have additional bits set for block behaviors and wild encounters, and the solution to that is to only modify boxes 1 and 2, and the upper half of box 3 (which we replace with a 6).
+```
+
+Now the reason why I put a 60 in there, is because that is what triggers the triple tile. Now obviously your tile might have additional bits set for block behaviors and wild encounters, and the solution to that is to only modify boxes 1 and 2, and the upper half of box 3 (which we replace with a 6).
 
 
 
@@ -550,6 +563,3 @@ With that set, you can go ahead and test it in VBA. Here's a sample screen of wh
 
 As you can see, you have the ground underneath the fence, the fence itself, and a tree above both. This system is especially useful for trees in particular because it allows you to have more dynamic environments with better looking trees without having to sacrifice additional tiles in your tileset.
 
-
-
-Comments, questions, and concerns are welcome. Also, it should be noted that this system will be implemented in MEH along with a proper inserter. This is just a thread explaining how it works. Also, (before someone asks), this system will not be ported to RSE due to the fact that RSE only has two bytes available for behaviors/backgrounds, which only gives us 4 out of the 10 needed bits for this system. So it's not a hate/time issue, but in fact an incapability without severely breaking existing tools. If there's enough support however, I *might* be able to implement something which expands the behavior bytes and is compatible with MEH. But it's very unlikely.
