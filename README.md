@@ -518,7 +518,9 @@ overworld_bg3_tilemap: .long 0x0300501C
 render_bgmap: .long 0x080F67A4+1
 getBlockIDAt: .long 0x08058E48+1
 cur_mapheader: .long 0x02036DFC
-```(To insert this, compile the routine and overwrite the bytes at 0x05A9B4. The compiled size should be 288 (0x120) bytes long. Any larger will overwrite part of the next routine.)
+```
+
+(To insert this, compile the routine and overwrite the bytes at 0x05A9B4. The compiled size should be 288 (0x120) bytes long. Any larger will overwrite part of the next routine.)
 
 
 
